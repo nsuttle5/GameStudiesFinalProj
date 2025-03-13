@@ -7,6 +7,10 @@ Library/
 Library\
 \Library\
 /Library/
+\Temp\
+/Temp/
+Temp/
+Temp\
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
