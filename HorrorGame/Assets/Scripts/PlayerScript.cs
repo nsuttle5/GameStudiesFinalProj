@@ -32,13 +32,20 @@ public class PlayerScript : MonoBehaviour
         Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
 
         // Movement
-        float moveForward = Input.GetAxis("Vertical") * speed;
-        float moveSide = Input.GetAxis("Horizontal") * speed;
+        float moveDirectionY = velocity.y;
+        velocity = (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal")) * speed;
+        velocity.y = moveDirectionY;
 
-        Vector3 move = transform.right * moveSide + transform.forward * moveForward;
+        // Check if the player is grounded
+        isGrounded = controller.isGrounded;
+
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f; // Small value to keep the player grounded
+        }
 
         // Jump
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (isGrounded && Input.GetButtonDown("Jump"))
         {
             velocity.y = Mathf.Sqrt(jumpForce * 2f * gravity);
         }
@@ -46,10 +53,9 @@ public class PlayerScript : MonoBehaviour
         // Apply gravity
         velocity.y -= gravity * Time.deltaTime;
 
-        // Move player
-        controller.Move((move + velocity) * Time.deltaTime);
+        // Move the player
+        controller.Move(velocity * Time.deltaTime);
     }
-
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.gameObject.CompareTag("Ground"))
