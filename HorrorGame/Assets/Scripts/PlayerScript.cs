@@ -10,6 +10,7 @@ public class PlayerScript : MonoBehaviour
     private Vector3 velocity;
     private bool isGrounded;
     private CharacterController controller;
+    public bool isHiding = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,7 +22,7 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Mouse look
+        // Mouse look (always allow camera movement)
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
@@ -31,31 +32,35 @@ public class PlayerScript : MonoBehaviour
         transform.Rotate(0, mouseX, 0);
         Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
 
-        // Movement
-        float moveDirectionY = velocity.y;
-        velocity = (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal")) * speed;
-        velocity.y = moveDirectionY;
-
-        // Check if the player is grounded
-        isGrounded = controller.isGrounded;
-
-        if (isGrounded && velocity.y < 0)
+        if (!isHiding) // Only allow position movement if not hiding
         {
-            velocity.y = -2f; // Small value to keep the player grounded
+            // Movement
+            float moveDirectionY = velocity.y;
+            velocity = (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal")) * speed;
+            velocity.y = moveDirectionY;
+
+            // Check if the player is grounded
+            isGrounded = controller.isGrounded;
+
+            if (isGrounded && velocity.y < 0)
+            {
+                velocity.y = -2f; // Small value to keep the player grounded
+            }
+
+            // Jump
+            if (isGrounded && Input.GetButtonDown("Jump"))
+            {
+                velocity.y = Mathf.Sqrt(jumpForce * 2f * gravity);
+            }
+
+            // Apply gravity
+            velocity.y -= gravity * Time.deltaTime;
+
+            // Move the player
+            controller.Move(velocity * Time.deltaTime);
         }
-
-        // Jump
-        if (isGrounded && Input.GetButtonDown("Jump"))
-        {
-            velocity.y = Mathf.Sqrt(jumpForce * 2f * gravity);
-        }
-
-        // Apply gravity
-        velocity.y -= gravity * Time.deltaTime;
-
-        // Move the player
-        controller.Move(velocity * Time.deltaTime);
     }
+
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.gameObject.CompareTag("Ground"))
