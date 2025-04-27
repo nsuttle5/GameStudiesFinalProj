@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class EnemyAI : MonoBehaviour
     public float soundDetectionSensitivity = 0.5f; // How sensitive the enemy is to sound (player speed multiplier)
 
     private Rigidbody playerRigidbody; // Reference to the player's Rigidbody for velocity
+
+    public static Texture2D deathScreenBackground; // Static variable to store the screenshot for Lose_Scene
+
 
     void Start()
     {
@@ -212,7 +216,19 @@ public class EnemyAI : MonoBehaviour
     {
         // For simplicity, we reload the current scene (you could show a game over screen instead)
         Debug.Log("Game Over! Enemy caught the player!");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Reloads the current scene
+
+        StartCoroutine(CaptureAndLoadLoseScreen());
+    }
+
+    private IEnumerator CaptureAndLoadLoseScreen()
+    {
+        yield return new WaitForEndOfFrame(); // Wait for rendering to complete
+
+        // Capture the current frame as a texture
+        deathScreenBackground = ScreenCapture.CaptureScreenshotAsTexture();
+
+        // Now load the lose screen scene
+        SceneManager.LoadScene("Lose_Scene");
     }
 
     // Debugging: visualize the raycast in the editor
