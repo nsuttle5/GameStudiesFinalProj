@@ -29,6 +29,14 @@ public class EnemyAI : MonoBehaviour
 
     public static Texture2D deathScreenBackground; // Static variable to store the screenshot for Lose_Scene
 
+    public AudioClip chaseSFX;
+    private AudioSource audioSource;
+    private bool wasChasingPlayer = false; // To track transitions
+
+    private float chaseSFXCooldown = 35f; // Minimum seconds between SFX plays
+    private float lastChaseSFXTime = -Mathf.Infinity; // Time the last SFX played
+
+
 
     void Start()
     {
@@ -46,7 +54,40 @@ public class EnemyAI : MonoBehaviour
 
         // Get the player's Rigidbody for calculating speed
         playerRigidbody = player.GetComponent<Rigidbody>();
+
+        // Initialize audio
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
+
+    private void HandleChaseSFX()
+{
+    if (isChasingPlayer)
+    {
+        if (chaseSFX != null && audioSource != null && !audioSource.isPlaying)
+        {
+            audioSource.clip = chaseSFX;
+            audioSource.loop = false; // or true if it's ambient music
+            audioSource.Play();
+        }
+    }
+    else
+    {
+        if (audioSource.isPlaying && audioSource.clip == chaseSFX)
+        {
+            audioSource.Stop();
+        }
+    }
+
+    wasChasingPlayer = isChasingPlayer;
+}
+
+
+
+
 
     void Update()
     {
@@ -89,6 +130,8 @@ public class EnemyAI : MonoBehaviour
 
         // Check for collision with the player
         CheckForPlayerCollision();
+        HandleChaseSFX();
+
     }
 
     // Set a new target position within the roaming area
