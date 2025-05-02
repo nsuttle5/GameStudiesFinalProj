@@ -11,12 +11,30 @@ public class PlayerScript : MonoBehaviour
     private bool isGrounded;
     private CharacterController controller;
     public bool isHiding = false;
+    public AudioClip footstepSFX;
+    private AudioSource audioSource;
+
+    public float stepInterval = 0.5f; // Time between footstep sounds
+    private float stepTimer = 0f;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         controller = GetComponent<CharacterController>();
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSource.clip = footstepSFX;
+        audioSource.loop = true;
+        audioSource.playOnAwake = false;
+
+
     }
 
     // Update is called once per frame
@@ -58,6 +76,25 @@ public class PlayerScript : MonoBehaviour
 
             // Move the player
             controller.Move(velocity * Time.deltaTime);
+
+            // Footstep SFX logic
+            bool isMoving = Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0;
+
+            if (controller.isGrounded && isMoving)
+            {
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.Play();
+                }
+            }
+            else
+            {
+                if (audioSource.isPlaying)
+                {
+                    audioSource.Pause(); // Use .Stop() if you want to restart the sound on resume
+                }
+            }
+
         }
     }
 

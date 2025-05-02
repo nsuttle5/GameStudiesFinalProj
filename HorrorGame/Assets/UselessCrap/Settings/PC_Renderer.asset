@@ -56,7 +56,8 @@ MonoBehaviour:
   - {fileID: 9216346157662705100}
   - {fileID: -3257472217755969156}
   - {fileID: -6994370723181708976}
-  m_RendererFeatureMap: ad6b866f10d7b46c907c95673445e35dcc958506000ae77f7c99f3da4622cbd250b95c91e200ef9e
+  - {fileID: 0}
+  m_RendererFeatureMap: ad6b866f10d7b46c907c95673445e35dcc958506000ae77f7c99f3da4622cbd250b95c91e200ef9ebf490a24b5aab40d
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -82,6 +83,22 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
+--- !u!114 &987601913271437759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 052a0051f28380a49905d797cf6fd45d, type: 3}
+  m_Name: MKToonPerObjectOutlines
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  _renderObjectsFeature: {fileID: 0}
+  _layerMask:
+    m_Bits: 4294967295
 --- !u!114 &6765327156619082896
 MonoBehaviour:
   m_ObjectHideFlags: 0
